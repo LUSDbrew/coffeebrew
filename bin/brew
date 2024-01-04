@@ -48,88 +48,88 @@ done
 unset cmd
 
 BREW_FILE_DIRECTORY="$(quiet_cd "${0%/*}/" && pwd -P)"
-HOMEBREW_BREW_FILE="${BREW_FILE_DIRECTORY%/}/${0##*/}"
-HOMEBREW_PREFIX="${HOMEBREW_BREW_FILE%/*/*}"
+COFFEEBREW_BREW_FILE="${BREW_FILE_DIRECTORY%/}/${0##*/}"
+COFFEEBREW_PREFIX="${COFFEEBREW_BREW_FILE%/*/*}"
 
 # Default to / prefix if unset or the bin/brew file.
-if [[ -z "${HOMEBREW_PREFIX}" || "${HOMEBREW_PREFIX}" = "${HOMEBREW_BREW_FILE}" ]]
+if [[ -z "${COFFEEBREW_PREFIX}" || "${COFFEEBREW_PREFIX}" = "${COFFEEBREW_BREW_FILE}" ]]
 then
-  HOMEBREW_PREFIX="/"
+  COFFEEBREW_PREFIX="/"
 fi
 
-HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}"
+COFFEEBREW_REPOSITORY="${COFFEEBREW_PREFIX}"
 
-# Resolve the bin/brew symlink to find Homebrew's repository
-if [[ -L "${HOMEBREW_BREW_FILE}" ]]
+# Resolve the bin/brew symlink to find Coffeebrew's repository
+if [[ -L "${COFFEEBREW_BREW_FILE}" ]]
 then
-  BREW_FILE_DIRECTORY="$(symlink_target_directory "${HOMEBREW_BREW_FILE}" "${BREW_FILE_DIRECTORY}")"
-  HOMEBREW_REPOSITORY="${BREW_FILE_DIRECTORY%/*}"
+  BREW_FILE_DIRECTORY="$(symlink_target_directory "${COFFEEBREW_BREW_FILE}" "${BREW_FILE_DIRECTORY}")"
+  COFFEEBREW_REPOSITORY="${BREW_FILE_DIRECTORY%/*}"
 fi
 
-# Try to find a /usr/local HOMEBREW_PREFIX where possible (for bottles)
-if [[ -L "/usr/local/bin/brew" && ! -L "${HOMEBREW_PREFIX}/Cellar" ]]
+# Try to find a /usr/local COFFEEBREW_PREFIX where possible (for bottles)
+if [[ -L "/usr/local/bin/brew" && ! -L "${COFFEEBREW_PREFIX}/Cellar" ]]
 then
   USR_LOCAL_BREW_FILE_DIRECTORY="$(symlink_target_directory "/usr/local/bin/brew" "/usr/local/bin")"
-  USR_LOCAL_HOMEBREW_REPOSITORY="${USR_LOCAL_BREW_FILE_DIRECTORY%/*}"
-  if [[ "${HOMEBREW_REPOSITORY}" = "${USR_LOCAL_HOMEBREW_REPOSITORY}" ]]
+  USR_LOCAL_COFFEEBREW_REPOSITORY="${USR_LOCAL_BREW_FILE_DIRECTORY%/*}"
+  if [[ "${COFFEEBREW_REPOSITORY}" = "${USR_LOCAL_COFFEEBREW_REPOSITORY}" ]]
   then
-    HOMEBREW_PREFIX="/usr/local"
+    COFFEEBREW_PREFIX="/usr/local"
   fi
-  unset USR_LOCAL_BREW_FILE_DIRECTORY USR_LOCAL_HOMEBREW_REPOSITORY
+  unset USR_LOCAL_BREW_FILE_DIRECTORY USR_LOCAL_COFFEEBREW_REPOSITORY
 fi
 
 unset BREW_FILE_DIRECTORY
 
-# If the location of HOMEBREW_LIBRARY changes
+# If the location of COFFEEBREW_LIBRARY changes
 # keg_relocate.rb, formula_cellar_checks.rb, and test/global_spec.rb need to change.
-HOMEBREW_LIBRARY="${HOMEBREW_REPOSITORY}/Library"
+COFFEEBREW_LIBRARY="${COFFEEBREW_REPOSITORY}/Library"
 
-# Load Homebrew's variable configuration files from disk.
-export_homebrew_env_file() {
+# Load Coffeebrew's variable configuration files from disk.
+export_coffeebrew_env_file() {
   local env_file
 
   env_file="${1}"
   [[ -r "${env_file}" ]] || return 0
   while read -r line
   do
-    # only load HOMEBREW_* lines
-    [[ "${line}" = "HOMEBREW_"* ]] || continue
+    # only load COFFEEBREW_* lines
+    [[ "${line}" = "COFFEEBREW_"* ]] || continue
     export "${line?}"
   done <"${env_file}"
 }
 
 # First, load the system-wide configuration.
 unset SYSTEM_ENV_TAKES_PRIORITY
-if [[ -n "${HOMEBREW_SYSTEM_ENV_TAKES_PRIORITY-}" ]]
+if [[ -n "${COFFEEBREW_SYSTEM_ENV_TAKES_PRIORITY-}" ]]
 then
   SYSTEM_ENV_TAKES_PRIORITY="1"
 else
-  export_homebrew_env_file "/etc/homebrew/brew.env"
+  export_coffeebrew_env_file "/etc/coffeebrew/brew.env"
 fi
 
 # Next, load the prefix configuration
-export_homebrew_env_file "${HOMEBREW_PREFIX}/etc/homebrew/brew.env"
+export_coffeebrew_env_file "${COFFEEBREW_PREFIX}/etc/coffeebrew/brew.env"
 
 # Finally, load the user configuration
 if [[ -n "${XDG_CONFIG_HOME-}" ]]
 then
-  HOMEBREW_USER_CONFIG_HOME="${XDG_CONFIG_HOME}/homebrew"
+  COFFEEBREW_USER_CONFIG_HOME="${XDG_CONFIG_HOME}/coffeebrew"
 else
-  HOMEBREW_USER_CONFIG_HOME="${HOME}/.homebrew"
+  COFFEEBREW_USER_CONFIG_HOME="${HOME}/.coffeebrew"
 fi
 
-export_homebrew_env_file "${HOMEBREW_USER_CONFIG_HOME}/brew.env"
+export_coffeebrew_env_file "${COFFEEBREW_USER_CONFIG_HOME}/brew.env"
 
 # If the system configuration takes priority, load it last.
 if [[ -n "${SYSTEM_ENV_TAKES_PRIORITY-}" ]]
 then
-  export_homebrew_env_file "/etc/homebrew/brew.env"
+  export_coffeebrew_env_file "/etc/coffeebrew/brew.env"
 fi
 
-# Copy and export all HOMEBREW_* variables previously mentioned in
-# manpage or used elsewhere by Homebrew.
+# Copy and export all COFFEEBREW_* variables previously mentioned in
+# manpage or used elsewhere by Coffeebrew.
 
-# These variables are allowed to be set by the user as, e.g., `HOMEBREW_BROWSER`.
+# These variables are allowed to be set by the user as, e.g., `COFFEEBREW_BROWSER`.
 MANPAGE_VARS=(
   BAT_CONFIG_PATH
   BAT_THEME
@@ -143,14 +143,14 @@ do
   # Skip if variable value is empty.
   [[ -z "${!VAR:-}" ]] && continue
 
-  VAR_NEW="HOMEBREW_${VAR}"
-  # Skip if existing HOMEBREW_* variable is set.
+  VAR_NEW="COFFEEBREW_${VAR}"
+  # Skip if existing COFFEEBREW_* variable is set.
   [[ -n "${!VAR_NEW:-}" ]] && continue
   export "${VAR_NEW}"="${!VAR}"
 done
 
-# We don't want to take the user's value for, e.g., `HOMEBREW_PATH` here!
-USED_BY_HOMEBREW_VARS=(
+# We don't want to take the user's value for, e.g., `COFFEEBREW_PATH` here!
+USED_BY_COFFEEBREW_VARS=(
   CODESPACES
   COLORTERM
   DBUS_SESSION_BUS_ADDRESS
@@ -161,30 +161,30 @@ USED_BY_HOMEBREW_VARS=(
   XDG_CACHE_HOME
   XDG_RUNTIME_DIR
 )
-for VAR in "${USED_BY_HOMEBREW_VARS[@]}"
+for VAR in "${USED_BY_COFFEEBREW_VARS[@]}"
 do
   # Skip if variable value is empty.
   [[ -z "${!VAR:-}" ]] && continue
 
-  # We unconditionally override `HOMEBREW_*` here.
-  VAR_NEW="HOMEBREW_${VAR}"
+  # We unconditionally override `COFFEEBREW_*` here.
+  VAR_NEW="COFFEEBREW_${VAR}"
   export "${VAR_NEW}"="${!VAR}"
 done
 
-unset VAR VAR_NEW MANPAGE_VARS USED_BY_HOMEBREW_VARS
+unset VAR VAR_NEW MANPAGE_VARS USED_BY_COFFEEBREW_VARS
 
-export HOMEBREW_BREW_FILE
-export HOMEBREW_PREFIX
-export HOMEBREW_REPOSITORY
-export HOMEBREW_LIBRARY
-export HOMEBREW_USER_CONFIG_HOME
+export COFFEEBREW_BREW_FILE
+export COFFEEBREW_PREFIX
+export COFFEEBREW_REPOSITORY
+export COFFEEBREW_LIBRARY
+export COFFEEBREW_USER_CONFIG_HOME
 
 # set from user environment
 # shellcheck disable=SC2154
-# Use VISUAL if HOMEBREW_EDITOR and EDITOR are unset.
-if [[ -z "${HOMEBREW_EDITOR:-}" && -n "${VISUAL:-}" ]]
+# Use VISUAL if COFFEEBREW_EDITOR and EDITOR are unset.
+if [[ -z "${COFFEEBREW_EDITOR:-}" && -n "${VISUAL:-}" ]]
 then
-  export HOMEBREW_EDITOR="${VISUAL}"
+  export COFFEEBREW_EDITOR="${VISUAL}"
 fi
 
 # set from user environment
@@ -198,7 +198,7 @@ fi
 
 if [[ -n "${GITHUB_ACTIONS:-}" && -n "${ImageOS:-}" && -n "${ImageVersion:-}" ]]
 then
-  export HOMEBREW_GITHUB_HOSTED_RUNNER=1
+  export COFFEEBREW_GITHUB_HOSTED_RUNNER=1
 fi
 
 # filter the user environment
@@ -210,7 +210,7 @@ ENV_VAR_NAMES=(
   http_proxy https_proxy ftp_proxy no_proxy all_proxy HTTPS_PROXY FTP_PROXY ALL_PROXY
 )
 # Filter all but the specific variables.
-for VAR in "${ENV_VAR_NAMES[@]}" "${!HOMEBREW_@}"
+for VAR in "${ENV_VAR_NAMES[@]}" "${!COFFEEBREW_@}"
 do
   # Skip if variable value is empty.
   [[ -z "${!VAR:-}" ]] && continue
@@ -232,4 +232,4 @@ then
 fi
 unset VAR ENV_VAR_NAMES
 
-exec /usr/bin/env -i "${FILTERED_ENV[@]}" /bin/bash "${HOMEBREW_LIBRARY}/Homebrew/brew.sh" "$@"
+exec /usr/bin/env -i "${FILTERED_ENV[@]}" /bin/bash "${COFFEEBREW_LIBRARY}/Coffeebrew/brew.sh" "$@"
