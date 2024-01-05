@@ -7,10 +7,10 @@
 # shellcheck disable=SC2154
 source "${HOMEBREW_LIBRARY}/Homebrew/items.sh"
 
-homebrew-casks() {
+coffeebrew-casks() {
   local find_include_filter='*/Casks/*\.rb'
   local sed_filter='s|/Casks/(.+/)?|/|'
-  local grep_filter='^homebrew/cask'
+  local grep_filter='^coffeebrew/cask'
 
   # HOMEBREW_CACHE is set by brew.sh
   # shellcheck disable=SC2154
@@ -20,9 +20,9 @@ homebrew-casks() {
     {
       cat "${HOMEBREW_CACHE}/api/cask_names.txt"
       echo
-      homebrew-items "${find_include_filter}" '.*/homebrew/homebrew-cask/.*' "${sed_filter}" "${grep_filter}"
+      coffeebrew-items "${find_include_filter}" '.*/LUSDbrew/coffeebrew-cask/.*' "${sed_filter}" "${grep_filter}"
     } | sort -uf
   else
-    homebrew-items "${find_include_filter}" '^\b$' "${sed_filter}" "${grep_filter}"
+    coffeebrew-items "${find_include_filter}" '^\b$' "${sed_filter}" "${grep_filter}"
   fi
 }
