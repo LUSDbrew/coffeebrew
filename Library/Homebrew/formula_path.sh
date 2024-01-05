@@ -6,7 +6,7 @@
 # anything else? delegate to the slower cmd/--prefix.rb and cmd/--cellar.rb
 # HOMEBREW_PREFIX and HOMEBREW_REPOSITORY are set by brew.sh
 # shellcheck disable=SC2154
-homebrew-formula-path() {
+coffeebrew-formula-path() {
   while [[ "$#" -gt 0 ]]
   do
     case "$1" in
@@ -42,7 +42,7 @@ homebrew-formula-path() {
   fi
 
   local formula_exists
-  if [[ -f "${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-core/Formula/${formula}.rb" ]]
+  if [[ -f "${HOMEBREW_REPOSITORY}/Library/Taps/LUSDbrew/coffeebrew-core/Formula/${formula}.rb" ]]
   then
     formula_exists="1"
   else
