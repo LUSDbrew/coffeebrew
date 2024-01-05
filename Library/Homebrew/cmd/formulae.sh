@@ -7,10 +7,10 @@
 # shellcheck disable=SC2154
 source "${HOMEBREW_LIBRARY}/Homebrew/items.sh"
 
-homebrew-formulae() {
+coffeebrew-formulae() {
   local find_include_filter='*\.rb'
   local sed_filter='s|/Formula/(.+/)?|/|'
-  local grep_filter='^homebrew/core'
+  local grep_filter='^coffeebrew/core'
 
   # HOMEBREW_CACHE is set by brew.sh
   # shellcheck disable=SC2154
@@ -20,9 +20,9 @@ homebrew-formulae() {
     {
       cat "${HOMEBREW_CACHE}/api/formula_names.txt"
       echo
-      homebrew-items "${find_include_filter}" '.*Casks(/.*|$)|.*/homebrew/homebrew-core/.*' "${sed_filter}" "${grep_filter}"
+      coffeebrew-items "${find_include_filter}" '.*Casks(/.*|$)|.*/LUSDbrew/coffeebrew-core/.*' "${sed_filter}" "${grep_filter}"
     } | sort -uf
   else
-    homebrew-items "${find_include_filter}" '.*Casks(/.*|$)' "${sed_filter}" "${grep_filter}"
+    coffeebrew-items "${find_include_filter}" '.*Casks(/.*|$)' "${sed_filter}" "${grep_filter}"
   fi
 }
