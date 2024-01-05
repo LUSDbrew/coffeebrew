@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <installer-gui-script minSpecVersion="2">
-  <pkg-ref id="sh.brew.homebrew"/>
+  <pkg-ref id="sh.brew.coffeebrew"/>
   <options customize="never" hostArchitectures="x86_64,arm64" rootVolumeOnly="true"/>
   <volume-check>
     <allowed-os-versions>
@@ -9,14 +9,14 @@
   </volume-check>
   <choices-outline>
     <line choice="default">
-      <line choice="sh.brew.homebrew"/>
+      <line choice="sh.brew.coffeebrew"/>
     </line>
   </choices-outline>
   <choice id="default"/>
-  <choice id="sh.brew.homebrew" visible="false">
-    <pkg-ref id="sh.brew.homebrew"/>
+  <choice id="sh.brew.coffeebrew" visible="false">
+    <pkg-ref id="sh.brew.coffeebrew"/>
   </choice>
-  <pkg-ref id="sh.brew.homebrew" onConclusion="none">Homebrew.pkg</pkg-ref>
+  <pkg-ref id="sh.brew.coffeebrew" onConclusion="none">Homebrew.pkg</pkg-ref>
 
   <title>Homebrew</title>
   <organization>sh.brew</organization>
